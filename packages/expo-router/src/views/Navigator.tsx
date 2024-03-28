@@ -4,7 +4,7 @@
 import { RouterFactory, StackRouter, useNavigationBuilder } from '@react-navigation/native';
 import * as React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { View } from "react-native";
 import { Screen } from './Screen';
 import { useContextKey } from '../Route';
 import { useFilterScreenChildren } from '../layouts/withLayoutContext';
@@ -104,15 +104,19 @@ export function useSlot() {
 
   const { state, descriptors } = context;
 
-  const current = state.routes.find((route, i) => {
-    return state.index === i;
+  return state.routes.map((route, i) => {
+    return (
+      <View
+        key={route.key}
+        style={[
+          StyleSheet.absoluteFill,
+          { display: i === state.index ? "flex" : "none" },
+        ]}
+      >
+        {descriptors[route.key].render()}
+      </View>
+    );
   });
-
-  if (!current) {
-    return null;
-  }
-
-  return descriptors[current.key]?.render() ?? null;
 }
 
 /** Renders the currently selected content. */
